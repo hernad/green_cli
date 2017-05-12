@@ -55,3 +55,12 @@ instance of __PARAMETERS
 };
 </pre>
 
+
+
+## Notes
+
+scaleway rani radovi:
+
+   https://github.com/hernad/scaleway-ipxe.git
+
+
