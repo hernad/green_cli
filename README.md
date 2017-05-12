@@ -1,7 +1,15 @@
 # update G7 iso
 
+update iso without restart:
+
 <pre>
 $ ./G7_update_iso.sh 192.168.168.192 
+</pre>
+
+update iso with restart:
+
+<pre>
+$ ./G7_update_iso.sh 192.168.168.152 --restart
 </pre>
 
 <pre>
