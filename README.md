@@ -1,15 +1,19 @@
 # update G7 iso
 
-update iso without restart:
+Usage:
 
+   ./G7_update_iso.sh <G7_HOST> <GREENBOX_VERSION> [--restart]
+
+
+update iso without restart:
 <pre>
-$ ./G7_update_iso.sh 192.168.168.192 
+$ ./G7_update_iso.sh 192.168.168.192 4.5.9 
 </pre>
 
 update iso with restart:
 
 <pre>
-$ ./G7_update_iso.sh 192.168.168.152 --restart
+$ ./G7_update_iso.sh 192.168.168.152 4.5.9 --restart
 </pre>
 
 <pre>
