@@ -1,0 +1,56 @@
+#!/usr/bin/expect
+# Usage: ipxe.expect "SCW_RUN_ARGS" ["IPXE LINE" ["IPXE LINE" [...]]]
+#
+# Examples:
+#        ipxe.expect \
+#            "--commercial-type=VC1S 50G" \
+#            "chain --autofree http://boot.netboot.xyz/menu.ipxe"
+#
+#        ipxe.expect \
+#            "50G" \
+#            "initrd http://ftp.ch.openbsd.org/pub/OpenBSD/5.8/amd64/install58.iso" \
+#            "chain http://boot.salstar.sk/memdisk iso raw"
+
+
+set timeout 120
+set server [lindex $argv 0]
+set initrd [lindex $argv 1]
+set chain [lindex $argv 2]
+
+eval spawn slow-stream --raw -b 1 -i 50 --stdout-passthrough -- scw attach $server
+
+# Detect iPXE trigger
+expect "Press Ctrl-B for the iPXE command line..."
+send   "\x02"
+
+
+# Perform initial DHCP
+expect "iPXE>"
+send   "dhcp\r"
+
+
+#foreach command $commands {
+#    expect "iPXE>"
+#    send   "${command}\r"
+#}
+
+expect "iPXE>"
+send "${initrd}\r"
+
+expect {
+  "iPXE>"  { send "${chain}\r" }
+  -re "Operation not permitted|No such file or directory" { puts "ISO ${initrd} ERROR" ; exit }
+}
+
+expect {
+  "MEMDISK: No ramdisk image specified!" { puts "initrd ERROR" ; exit }
+
+  -r "boot:|boooott::" { send "rack SCALEWAY=1\r" } 
+}
+
+expect "Core Linux" { puts "greenbox login yeaah" ; exit }
+
+
+# Drop shell
+set timeout -1
+interact

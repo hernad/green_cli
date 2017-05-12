@@ -1,0 +1,67 @@
+#!/bin/bash
+
+echo VULTR_API_KEY=$VULTR_API_KEY
+
+
+CMD="curl -H 'API-Key: $VULTR_API_KEY' https://api.vultr.com/v1/iso/list"
+echo $CMD
+eval $CMD
+
+GREENBOX_VERSION=4.5.9
+CMD="curl -XPOST -H \"API-Key: $VULTR_API_KEY\" https://api.vultr.com/v1/iso/create_from_url --data \"url=http://download.bring.out.ba/greenbox-${GREENBOX_VERSION}.iso\""
+
+SERVER_NAME=greenbox-0
+DOMAIN=cloud.out.ba
+TAG=greenbox
+
+echo $CMD
+#eval $CMD
+
+#output:
+#{"ISOID":275309}
+
+
+VULTR_ISO_ID=`vultr iso | grep greenbox-${GREENBOX_VERSION}.iso | awk '{print $1}'`
+VULTR_OS_ID=`vultr os | grep Custom | awk '{print $1}'`
+
+#9	Frankfurt	Europe		DE			false		FRA
+VULTR_REGION_ID=9
+
+
+
+#hernads-MacBook-Air:infra hernad$ vultr plans
+#VPSPLANID	NAME					VCPU	RAM	DISK	BANDWIDTH	PRICE
+#87		512 MB RAM,125 GB SATA,1.00 TB BW	1	512	125	1.00		5.00
+#201		1024 MB RAM,25 GB SSD,1.00 TB BW	1	1024	25	1.00		5.00
+#88		1024 MB RAM,250 GB SATA,2.00 TB BW	1	1024	250	2.00		10.00
+#202		2048 MB RAM,40 GB SSD,2.00 TB BW	1	2048	40	2.00		10.00
+#89		2048 MB RAM,500 GB SATA,3.00 TB BW	1	2048	500	3.00		20.00
+#203		4096 MB RAM,60 GB SSD,3.00 TB BW	2	4096	60	3.00		20.00
+#90		3072 MB RAM,750 GB SATA,4.00 TB BW	2	3072	750	4.00		30.00
+#91		4096 MB RAM,1000 GB SATA,5.00 TB BW	2	4096	1000	5.00		40.00
+#204		8192 MB RAM,100 GB SSD,4.00 TB BW	4	8192	100	4.00		40.00
+#115		8192 MB RAM,110 GB SSD,10.00 TB BW	2	8192	110	10.00		60.00
+#205		16384 MB RAM,200 GB SSD,5.00 TB BW	6	16384	200	5.00		80.00
+#116		16384 MB RAM,110 GB SSD,20.00 TB BW	4	16384	110	20.00		120.00
+#206		32768 MB RAM,300 GB SSD,6.00 TB BW	8	32768	300	6.00		160.00
+#117		24576 MB RAM,110 GB SSD,30.00 TB BW	6	24576	110	30.00		180.00
+#118		32768 MB RAM,110 GB SSD,40.00 TB BW	8	32768	110	40.00		240.00
+#207		65536 MB RAM,400 GB SSD,10.00 TB BW	16	65536	400	10.00		320.00
+#208		98304 MB RAM,800 GB SSD,15.00 TB BW	24	98304	800	15.00		640.00
+
+VULTR_PLAN_ID=201
+
+echo "iso_id=$VULTR_ISO_ID, os_id=$VULTR_OS_ID"
+
+vultr server create -n="$SERVER_NAME" \
+   -p=$VULTR_PLAN_ID \
+   -r=$VULTR_REGION_ID -o=$VULTR_OS_ID --iso=$VULTR_ISO_ID --hostname=$SERVER_NAME.$DOMAIN \
+   --tag="$TAG" \
+   --ipv6=false \
+   --notify-activate=true
+
+
+#Virtual machine created
+#SUBID		NAME		DCID	VPSPLANID	OSID
+#8426211		greenbox-0	9	29		159
+
