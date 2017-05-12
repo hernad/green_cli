@@ -1,7 +1,7 @@
 # update G7 iso
 
 <pre>
-$ ./g7_update_iso.sh 192.168.168.192 
+$ ./G7_update_iso.sh 192.168.168.192 
 </pre>
 
 <pre>
