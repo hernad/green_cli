@@ -28,9 +28,9 @@ echo "docker_machine_dir=$DOCKER_MACHINE_DIR"
 
 
 ssh greenbox@${G7_HOST} ls -l "$DOCKER_MACHINE_DIR"
-ssh greenbox@${G7_HOST} cp "$DOCKER_MACHINE_DIR/boot2docker.iso" "$DOCKER_MACHINE_DIR/boot2docker.iso.orig"
 
 ssh greenbox@${G7_HOST} VBoxManage controlvm greenbox poweroff
+ssh greenbox@${G7_HOST} mv "$DOCKER_MACHINE_DIR/boot2docker.iso" "$DOCKER_MACHINE_DIR/boot2docker.iso.orig"
 
 scp $GREEN_ISO greenbox@${G7_HOST}:"${DOCKER_MACHINE_DIR}"/boot2docker.iso
 
