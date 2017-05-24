@@ -4,8 +4,8 @@
 
 if [ $# -lt 1 ]
 then
-    echo "argumenti su: ./greenbox_usb_update  GREENBOX_VER"
-    echo " npr:   ./greenbox_usb_create 3.7.2"
+    echo "argumenti su: $0  GREENBOX_VER> [<CONSOLE>]"
+    echo " npr:   $0 3.7.2 vga"
     exit 1
 fi
 
@@ -20,6 +20,7 @@ GREEN_CFG=/media/syslinux.cfg
 DEF_BOOT=`cat $GREEN_CFG | grep "^default boot" | awk '{print $2}'`
 ISO_MNT=/tmp/${GREENBOX_VERSION}
 BOOT_PATH=/media/boot
+CONSOLE=${CONSOLE:-ttyS0,115200n8}
 
 cd /root
 
@@ -53,12 +54,12 @@ else
     echo "label greenbox-${GREENBOX_VERSION}" >> $GREEN_CFG
     echo "menu label greenbox-${GREENBOX_VERSION}" >> $GREEN_CFG
     echo "kernel /boot/${GREENBOX_VERSION}/vmlinuz64"  >> $GREEN_CFG
-    echo "append initrd=/boot/${GREENBOX_VERSION}/initrd.img loglevel=3 tz=CET-1CEST,M3.5.0,M10.5.0/3 noembed nomodeset norestore waitusb=10 LABEL=GREEN_HDD console=ttyS0,115200n8"  >> $GREEN_CFG
+    echo "append initrd=/boot/${GREENBOX_VERSION}/initrd.img loglevel=7 tz=CET-1CEST,M3.5.0,M10.5.0/3 noembed nomodeset norestore waitusb=10 LABEL=GREEN_HDD console=$CONSOLE"  >> $GREEN_CFG
     echo ""  >> $GREEN_CFG
 fi
 
 
-sed -i -e 's/default '"$DEF_BOOT"'/default greenbox-'"${GREENBOX_VERSION}"'/' $GREEN_CFG
+sed -i -e 's/^default '"$DEF_BOOT"'/default greenbox-'"${GREENBOX_VERSION}"'/' $GREEN_CFG
 echo "syncing file system ..."
 sync
 echo "default boot label is: greenbox-${GREENBOX_VERSION}"
