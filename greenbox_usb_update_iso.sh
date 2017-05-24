@@ -14,7 +14,7 @@ HOST=$1
 GREENBOX_VER=$2
 CONSOLE=$3
 
-if [ "$3" == "--restart" ] || [ "$3" == "--reboot" ] ; then
+if [ "$4" == "--restart" ] || [ "$4" == "--reboot" ] ; then
   REBOOT=1
 fi
 
@@ -40,5 +40,5 @@ ssh docker@$HOST "$CMD"
 
 if [ -n "$REBOOT" ] ; then
    echo "rebooting $HOST ..."
-   ssh docker@$HOST "sudo reboot -d 2 -f"
+   ssh docker@$HOST "sudo reboot"
 fi
