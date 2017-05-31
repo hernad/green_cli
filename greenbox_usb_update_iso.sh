@@ -37,6 +37,10 @@ fi
 CMD="sudo /usr/local/bin/greenbox_usb_update $GREENBOX_VER $CONSOLE"
 echo $CMD
 ssh docker@$HOST "$CMD" 
+if [ $? != 0 ] ; then
+  echo "error greenbox_usb_update on $HOST"
+  exit 1
+fi
 
 if [ -n "$REBOOT" ] ; then
    echo "rebooting $HOST ..."
