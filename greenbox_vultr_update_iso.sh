@@ -32,18 +32,18 @@ if [ -z "$VULTR_SERVER_ID" ] ; then
   exit 1
 fi
 
-VULTR_ISO_ID=`vultr iso | grep greenbox-${GREENBOX_VERSION}.iso | awk '{print $1}'`
 
+VULTR_ISO_ID=`vultr iso | grep greenbox-${GREENBOX_VERSION}.iso | awk '{print $1}'`
 if [ -n "$VULTR_ISO_ID" ] ; then
   echo "GREENBOX_VERSION=$GREENBOX_VERSION iso installed"
 else
   echo "installing $GREENBOX_VERSION iso ..."
+  echo -e
   CMD="curl -XPOST -H \"API-Key: $VULTR_API_KEY\" https://api.vultr.com/v1/iso/create_from_url --data \"url=http://download.bring.out.ba/greenbox-${GREENBOX_VERSION}.iso\""
-
+  echo $CMD
+  eval $CMD
 fi
 
-echo $CMD
-#eval $CMD
 
 #output:
 #{"ISOID":275309}
@@ -52,13 +52,14 @@ echo $CMD
 while [ -z "$VULTR_ISO_ID" ] ; do
  echo "waiting 10sec for greenbox $GREENBOX_VERSION iso to be installed ..."
  sleep 10
- VULTR_OS_ID=`vultr os | grep Custom | awk '{print $1}'`
+ VULTR_ISO_ID=`vultr iso | grep greenbox-${GREENBOX_VERSION}.iso | awk '{print $1}'`
 done
 
 
 echo "iso_id=$VULTR_ISO_ID, server_id=$VULTR_SERVER_ID"
 
-vultr server iso attach $SERVER
-   --iso=$VULTR_SERVER_ID
+echo attaching iso $VULTR_ISO_ID to server $VULTR_SERVER_ID, then restart
+vultr server iso attach $VULTR_SERVER_ID \
+   --iso=$VULTR_ISO_ID
 
 
