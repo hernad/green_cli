@@ -1,5 +1,8 @@
 #!/bin/bash
 
+WAIT_ISO_UPLOAD=60
+DOWNLOAD_URL=http://download.bring.out.ba
+
 echo VULTR_API_KEY=$VULTR_API_KEY
 
 
@@ -39,11 +42,12 @@ if [ -n "$VULTR_ISO_ID" ] ; then
 else
   echo "installing $GREENBOX_VERSION iso ..."
   echo -e
-  CMD="curl -XPOST -H \"API-Key: $VULTR_API_KEY\" https://api.vultr.com/v1/iso/create_from_url --data \"url=http://download.bring.out.ba/greenbox-${GREENBOX_VERSION}.iso\""
+  CMD="curl -XPOST -H \"API-Key: $VULTR_API_KEY\" https://api.vultr.com/v1/iso/create_from_url --data \"url=${DOWNLOAD_URL}/greenbox-${GREENBOX_VERSION}.iso\""
   echo $CMD
   eval $CMD
+  echo "waiting $WAIT_ISO_UPLOAD sec ..."
+  sleep $WAIT_ISO_UPLOAD
 fi
-
 
 #output:
 #{"ISOID":275309}
